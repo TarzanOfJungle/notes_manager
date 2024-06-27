@@ -85,8 +85,8 @@ class _NewNoteDialogState extends State<NoteDialog> {
                   description: _newNoteDescriptionController.text,
                   isImportant: _newNoteIsImportant,
                   isResolved: false, //TODO use this
-                  createdAt: _creatingNewNote ? DateTime.timestamp() : widget.note!.createdAt,
-                  updatedAt: _creatingNewNote ? null : DateTime.timestamp(),
+                  createdAt: _creatingNewNote ? DateTime.now() : widget.note!.createdAt,
+                  updatedAt: _creatingNewNote ? null : DateTime.now(),
               ));
               Navigator.of(context).pop();
             },
