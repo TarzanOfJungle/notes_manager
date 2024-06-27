@@ -14,16 +14,6 @@ class NotesPage extends StatefulWidget {
 }
 
 class _NotesPageState extends State<NotesPage> {
-  // final List<Note> _notes = [
-  //   Note(
-  //       id: "id1",
-  //       title: 'Note 1',
-  //       isImportant: true,
-  //       isResolved: false,
-  //       description: "blabla"),
-  //   Note(id: "id2", title: "NoteNote", isImportant: false, isResolved: false)
-  // ];
-
   final _notesBox = Hive.box<Note>(HiveConstants.NOTES_BOX_KEY);
 
   @override
