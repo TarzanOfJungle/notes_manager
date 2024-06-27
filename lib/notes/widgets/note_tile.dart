@@ -4,8 +4,13 @@ import 'package:notes_manager/notes/models/note.dart';
 class NoteTile extends StatelessWidget {
   final Note note;
   final VoidCallback onEdit;
+  final VoidCallback onDelete;
 
-  const NoteTile({super.key, required this.onEdit, required this.note});
+  const NoteTile(
+      {super.key,
+      required this.onEdit,
+      required this.note,
+      required this.onDelete});
 
   @override
   Widget build(BuildContext context) {
@@ -26,8 +31,6 @@ class NoteTile extends StatelessWidget {
               ],
             ),
             Text(note.description ?? ''),
-            Text(note.isImportant.toString()),
-            Text(note.isResolved.toString()),
           ],
         ),
       ),
