@@ -28,6 +28,7 @@ class NoteTile extends StatelessWidget {
               children: [
                 Text(note.title),
                 ElevatedButton(onPressed: onEdit, child: const Text('Edit')),
+                ElevatedButton(onPressed: onDelete, child: const Text('Delete')),
               ],
             ),
             Text(note.description ?? ''),

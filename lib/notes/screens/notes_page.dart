@@ -20,7 +20,8 @@ class _NotesPageState extends State<NotesPage> {
   bool _newNoteIsImportant = false;
 
   final List<Note> _notes = [
-    Note(id: "id1",
+    Note(
+        id: "id1",
         title: 'Note 1',
         isImportant: true,
         isResolved: false,
@@ -41,20 +42,18 @@ class _NotesPageState extends State<NotesPage> {
             TextField(
               controller: _newNoteTitleController,
               decoration: const InputDecoration(labelText: "Title:"),
-
             ),
             TextField(
               controller: _newNoteDescriptionController,
               decoration: const InputDecoration(labelText: "Description:"),
             ),
-            Switch(value: _newNoteIsImportant,
-                onChanged: (_) =>
-                    setState(() {
+            Switch(
+                value: _newNoteIsImportant,
+                onChanged: (_) => setState(() {
                       _newNoteIsImportant = !_newNoteIsImportant;
                     })),
             ElevatedButton(
-                onPressed: () =>
-                    setState(() {
+                onPressed: () => setState(() {
                       _notes.add(Note(
                           id: _uuid.v4(),
                           title: _newNoteTitleController.text,
@@ -69,20 +68,30 @@ class _NotesPageState extends State<NotesPage> {
       ),
     );
   }
-}
 
-Widget _buildNotesDisplay(List<Note> notes) {
-  return ListView.separated(
-    shrinkWrap: true,
-    physics: const NeverScrollableScrollPhysics(),
-    itemBuilder: (BuildContext context, int index) {
-      return NoteTile(onEdit: () => {},
-          onDelete: () => {},
-          note: notes[index]); //TODO onEdit
-    },
-    separatorBuilder: (BuildContext context, int index) {
-      return const SizedBox(height: 10.0);
-    },
-    itemCount: notes.length,
-  );
+  void _deleteNoteById(String id) {
+    setState(() {
+      _notes.removeWhere((note) => note.id == id);
+    });
+  }
+
+  Widget _buildNotesDisplay(List<Note> notes) {
+    return ListView.separated(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (BuildContext context, int index) {
+        final note = notes[index];
+        return NoteTile(
+            onEdit: () => {}, //TODO onEdit
+            onDelete: () {
+              _deleteNoteById(note.id);
+            },
+            note: note);
+      },
+      separatorBuilder: (BuildContext context, int index) {
+        return const SizedBox(height: 10.0);
+      },
+      itemCount: notes.length,
+    );
+  }
 }
