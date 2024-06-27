@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:notes_manager/notes/widgets/dialogs/note_dialog.dart';
 import 'package:notes_manager/notes/widgets/note_tile.dart';
 
@@ -21,6 +22,13 @@ class _NotesPageState extends State<NotesPage> {
         description: "blabla"),
     Note(id: "id2", title: "NoteNote", isImportant: false, isResolved: false)
   ];
+
+
+  @override
+  void dispose() {
+    Hive.close();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

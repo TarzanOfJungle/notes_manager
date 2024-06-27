@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:notes_manager/common/constants/hive_constants.dart';
 
 import '../../notes/models/note.dart';
 
@@ -8,6 +9,7 @@ abstract class Startup {
     WidgetsFlutterBinding.ensureInitialized();
     await Hive.initFlutter();
     await _initBoxes();
+    await Hive.openBox(HiveConstants.NOTES_BOX_KEY);
   }
 
   static Future<void> _initBoxes() async {
