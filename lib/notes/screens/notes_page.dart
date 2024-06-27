@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:notes_manager/notes/widgets/dialogs/new_note_dialog.dart';
 import 'package:notes_manager/notes/widgets/note_tile.dart';
 import 'package:uuid/uuid.dart';
 
@@ -12,13 +13,6 @@ class NotesPage extends StatefulWidget {
 }
 
 class _NotesPageState extends State<NotesPage> {
-  final _uuid = const Uuid();
-  final _newNoteTitleController = TextEditingController();
-
-  final _newNoteDescriptionController = TextEditingController();
-
-  bool _newNoteIsImportant = false;
-
   final List<Note> _notes = [
     Note(
         id: "id1",
@@ -34,37 +28,30 @@ class _NotesPageState extends State<NotesPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Notes"),
+        actions: [
+          IconButton(
+              onPressed: () => _onNewButtonPressed(context),
+              icon: const Icon(Icons.add)
+          )
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            const Text("New Note:"),
-            TextField(
-              controller: _newNoteTitleController,
-              decoration: const InputDecoration(labelText: "Title:"),
-            ),
-            TextField(
-              controller: _newNoteDescriptionController,
-              decoration: const InputDecoration(labelText: "Description:"),
-            ),
-            Switch(
-                value: _newNoteIsImportant,
-                onChanged: (_) => setState(() {
-                      _newNoteIsImportant = !_newNoteIsImportant;
-                    })),
-            ElevatedButton(
-                onPressed: () => setState(() {
-                      _notes.add(Note(
-                          id: _uuid.v4(),
-                          title: _newNoteTitleController.text,
-                          description: _newNoteDescriptionController.text,
-                          isImportant: _newNoteIsImportant,
-                          isResolved: false));
-                    }),
-                child: const Text("Add Note")),
             _buildNotesDisplay(_notes)
           ],
         ),
+      ),
+    );
+  }
+
+  void _onNewButtonPressed(context) {
+    showDialog(
+      context: context,
+      builder: (context) => NewNoteDialog(
+          onConfirm: (Note newNote) => setState(() {
+            _notes.add(newNote);
+          }),
       ),
     );
   }
