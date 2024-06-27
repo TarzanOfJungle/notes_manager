@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:notes_manager/common/constants/hive_constants.dart';
 import 'package:notes_manager/notes/widgets/dialogs/note_dialog.dart';
 import 'package:notes_manager/notes/widgets/note_tile.dart';
 
@@ -12,15 +14,13 @@ class NotesPage extends StatefulWidget {
 }
 
 class _NotesPageState extends State<NotesPage> {
-  final List<Note> _notes = [
-    Note(
-        id: "id1",
-        title: 'Note 1',
-        isImportant: true,
-        isResolved: false,
-        description: "blabla"),
-    Note(id: "id2", title: "NoteNote", isImportant: false, isResolved: false)
-  ];
+  final _notesBox = Hive.box<Note>(HiveConstants.NOTES_BOX_KEY);
+
+  @override
+  void dispose() {
+    Hive.close();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +66,7 @@ class _NotesPageState extends State<NotesPage> {
       context: context,
       builder: (context) => NoteDialog(
         onConfirm: (Note newNote) => setState(() {
-          _notes.add(newNote);
+          _addNote(newNote);
         }),
       ),
     );
@@ -78,16 +78,23 @@ class _NotesPageState extends State<NotesPage> {
         builder: (context) => NoteDialog(
             note: note,
             onConfirm: (Note updatedNote) => setState(() {
-                  int index = _notes.indexWhere((n) => n.id == updatedNote.id);
-                  if (index != -1) {
-                    _notes[index] = updatedNote;
-                  }
+                  _editNote(updatedNote);
                 })));
+  }
+
+  List<Note> get _notes => _notesBox.values.toList();
+
+  void _addNote(Note newNote) {
+    _notesBox.put(newNote.id, newNote);
+  }
+
+  void _editNote(Note updatedNote) {
+    _notesBox.put(updatedNote.id, updatedNote);
   }
 
   void _deleteNoteById(String id) {
     setState(() {
-      _notes.removeWhere((note) => note.id == id);
+      _notesBox.delete(id);
     });
   }
 }

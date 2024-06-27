@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:notes_manager/common/config/startup.dart';
 import 'package:notes_manager/notes/screens/notes_page.dart';
 
-void main() {
+void main() async {
+  await Startup.init();
   runApp(const NotesManagerApp());
 }
 
