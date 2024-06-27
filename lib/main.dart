@@ -16,7 +16,7 @@ class NotesManagerApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: NotesPage(),
+      home: const NotesPage(),
     );
   }
 }

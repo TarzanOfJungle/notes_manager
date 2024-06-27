@@ -1,11 +1,13 @@
 class Note {
+  final String id;
   final String title;
   final String? description;
   final bool isImportant;
   final bool isResolved;
 
-  Note(
-      {required this.title,
+  Note({
+      required this.id,
+      required this.title,
       this.description,
       required this.isImportant,
       required this.isResolved});
