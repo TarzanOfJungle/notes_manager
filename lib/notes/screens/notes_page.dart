@@ -31,7 +31,7 @@ class _NotesPageState extends State<NotesPage> {
       appBar: AppBar(
         title: const Text("Notes"),
       ),
-      body: Center(
+      body: SingleChildScrollView(
         child: Column(
           children: [
             const Text("New Note:"),
@@ -45,22 +45,30 @@ class _NotesPageState extends State<NotesPage> {
               decoration: const InputDecoration(labelText: "Description:"),
             ),
             Switch(value: _newNoteIsImportant,
-                onChanged: (_) => setState(() {
-                  _newNoteIsImportant = !_newNoteIsImportant;
-                })),
+                onChanged: (_) =>
+                    setState(() {
+                      _newNoteIsImportant = !_newNoteIsImportant;
+                    })),
             ElevatedButton(
-                onPressed: () => setState(() {
-                  _notes.add(Note(title: _newNoteTitleController.text,
-                      description: _newNoteDescriptionController.text,
-                      isImportant: _newNoteIsImportant,
-                      isResolved: false));
-                }),
+                onPressed: () =>
+                    setState(() {
+                      _notes.add(Note(title: _newNoteTitleController.text,
+                          description: _newNoteDescriptionController.text,
+                          isImportant: _newNoteIsImportant,
+                          isResolved: false));
+                    }),
                 child: const Text("Add Note")),
-            ..._notes.map((note) => NoteTile(onEdit: () => {}, note: note))
-                .toList(),
+            _buildNotesDisplay(_notes)
           ],
         ),
       ),
     );
   }
+}
+
+Widget _buildNotesDisplay(List<Note> notes) {
+  return Column(
+      children: notes.map((note) => NoteTile(onEdit: () => {}, note: note))
+          .toList(),
+  );
 }
