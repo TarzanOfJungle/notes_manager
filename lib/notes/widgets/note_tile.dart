@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:notes_manager/notes/models/note.dart';
 
+const _IMPORTANT_COLOR = Color(0xFFFFECB3);
 class NoteTile extends StatelessWidget {
   final Note note;
   final VoidCallback onEdit;
@@ -17,7 +18,7 @@ class NoteTile extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15.0),
-        color: note.isImportant ? Colors.amber : Colors.white,
+        color: note.isImportant ? _IMPORTANT_COLOR : DefaultSelectionStyle.defaultColor,
       ),
       child: Padding(
         padding: const EdgeInsets.all(8.0),

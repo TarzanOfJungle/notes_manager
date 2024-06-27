@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:notes_manager/notes/widgets/dialogs/new_note_dialog.dart';
+import 'package:notes_manager/notes/widgets/dialogs/note_dialog.dart';
 import 'package:notes_manager/notes/widgets/note_tile.dart';
-import 'package:uuid/uuid.dart';
 
 import '../models/note.dart';
 
@@ -31,35 +30,15 @@ class _NotesPageState extends State<NotesPage> {
         actions: [
           IconButton(
               onPressed: () => _onNewButtonPressed(context),
-              icon: const Icon(Icons.add)
-          )
+              icon: const Icon(Icons.add))
         ],
       ),
       body: SingleChildScrollView(
         child: Column(
-          children: [
-            _buildNotesDisplay(_notes)
-          ],
+          children: [_buildNotesDisplay(_notes)],
         ),
       ),
     );
-  }
-
-  void _onNewButtonPressed(context) {
-    showDialog(
-      context: context,
-      builder: (context) => NewNoteDialog(
-          onConfirm: (Note newNote) => setState(() {
-            _notes.add(newNote);
-          }),
-      ),
-    );
-  }
-
-  void _deleteNoteById(String id) {
-    setState(() {
-      _notes.removeWhere((note) => note.id == id);
-    });
   }
 
   Widget _buildNotesDisplay(List<Note> notes) {
@@ -69,7 +48,7 @@ class _NotesPageState extends State<NotesPage> {
       itemBuilder: (BuildContext context, int index) {
         final note = notes[index];
         return NoteTile(
-            onEdit: () => {}, //TODO onEdit
+            onEdit: () => _onEditButtonPressed(context, note),
             onDelete: () {
               _deleteNoteById(note.id);
             },
@@ -80,5 +59,35 @@ class _NotesPageState extends State<NotesPage> {
       },
       itemCount: notes.length,
     );
+  }
+
+  void _onNewButtonPressed(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => NoteDialog(
+        onConfirm: (Note newNote) => setState(() {
+          _notes.add(newNote);
+        }),
+      ),
+    );
+  }
+
+  void _onEditButtonPressed(BuildContext context, Note note) {
+    showDialog(
+        context: context,
+        builder: (context) => NoteDialog(
+            note: note,
+            onConfirm: (Note updatedNote) => setState(() {
+                  int index = _notes.indexWhere((n) => n.id == updatedNote.id);
+                  if (index != -1) {
+                    _notes[index] = updatedNote;
+                  }
+                })));
+  }
+
+  void _deleteNoteById(String id) {
+    setState(() {
+      _notes.removeWhere((note) => note.id == id);
+    });
   }
 }

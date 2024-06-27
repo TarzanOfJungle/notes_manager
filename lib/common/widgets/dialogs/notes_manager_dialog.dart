@@ -14,6 +14,7 @@ class NotesManagerDialog extends StatelessWidget {
           vertical: 25,
         ),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             _buildTitle(context),
             const SizedBox(height: 25),
