@@ -1,26 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:notes_manager/common/constants/hive_constants.dart';
 import 'package:notes_manager/notes/widgets/dialogs/note_dialog.dart';
 import 'package:notes_manager/notes/widgets/note_tile.dart';
 
 import '../models/note.dart';
 
-class NotesPage extends StatefulWidget {
-  const NotesPage({super.key});
-
-  @override
-  State<NotesPage> createState() => _NotesPageState();
-}
-
-class _NotesPageState extends State<NotesPage> {
+class NotesPage extends StatelessWidget {
+  NotesPage({super.key});
   final _notesBox = Hive.box<Note>(HiveConstants.NOTES_BOX_KEY);
-
-  @override
-  void dispose() {
-    Hive.close();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +24,15 @@ class _NotesPageState extends State<NotesPage> {
       ),
       body: SingleChildScrollView(
         child: Column(
-          children: [_buildNotesDisplay(_notes)],
+          children: [
+            ValueListenableBuilder(
+                valueListenable: _notesBox.listenable(),
+                builder: (context, _notesBox, _) {
+                  final notes = _notes;
+                  return _buildNotesDisplay(notes);
+                }
+            ),
+          ],
         ),
       ),
     );
@@ -65,9 +62,7 @@ class _NotesPageState extends State<NotesPage> {
     showDialog(
       context: context,
       builder: (context) => NoteDialog(
-        onConfirm: (Note newNote) => setState(() {
-          _addNote(newNote);
-        }),
+        onConfirm: (Note newNote) => _addNote(newNote)
       ),
     );
   }
@@ -77,9 +72,7 @@ class _NotesPageState extends State<NotesPage> {
         context: context,
         builder: (context) => NoteDialog(
             note: note,
-            onConfirm: (Note updatedNote) => setState(() {
-                  _editNote(updatedNote);
-                })));
+            onConfirm: (Note updatedNote) => _editNote(updatedNote)));
   }
 
   List<Note> get _notes {
@@ -96,9 +89,5 @@ class _NotesPageState extends State<NotesPage> {
     _notesBox.put(updatedNote.id, updatedNote);
   }
 
-  void _deleteNoteById(String id) {
-    setState(() {
-      _notesBox.delete(id);
-    });
-  }
+  void _deleteNoteById(String id) => _notesBox.delete(id);
 }

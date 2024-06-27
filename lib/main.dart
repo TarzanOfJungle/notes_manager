@@ -17,7 +17,7 @@ class NotesManagerApp extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true,
       ),
-      home: const NotesPage(),
+      home: NotesPage(),
     );
   }
 }
