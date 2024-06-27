@@ -80,15 +80,20 @@ class _NewNoteDialogState extends State<NoteDialog> {
         ElevatedButton(
             onPressed: () {
               widget.onConfirm(Note(
-                  id: widget.note == null ? _uuid.v4() : widget.note!.id,
+                  id: _creatingNewNote ? _uuid.v4() : widget.note!.id,
                   title: _newNoteTitleController.text,
                   description: _newNoteDescriptionController.text,
                   isImportant: _newNoteIsImportant,
-                  isResolved: false));
+                  isResolved: false, //TODO use this
+                  createdAt: _creatingNewNote ? DateTime.timestamp() : widget.note!.createdAt,
+                  updatedAt: _creatingNewNote ? null : DateTime.timestamp(),
+              ));
               Navigator.of(context).pop();
             },
-            child: Text(widget.note == null ? 'Add Note' : 'Save Changes')),
+            child: Text(_creatingNewNote ? 'Add Note' : 'Save Changes')),
       ],
     );
   }
+
+  bool get _creatingNewNote => widget.note == null;
 }

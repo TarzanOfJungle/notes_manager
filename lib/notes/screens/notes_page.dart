@@ -82,7 +82,11 @@ class _NotesPageState extends State<NotesPage> {
                 })));
   }
 
-  List<Note> get _notes => _notesBox.values.toList();
+  List<Note> get _notes {
+    List<Note> notesList = _notesBox.values.toList();
+    notesList.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    return notesList;
+  }
 
   void _addNote(Note newNote) {
     _notesBox.put(newNote.id, newNote);
