@@ -26,12 +26,13 @@ class NoteTile extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(note.title),
-                ElevatedButton(onPressed: onEdit, child: const Text('Edit')),
-                ElevatedButton(onPressed: onDelete, child: const Text('Delete')),
+                Text(note.title, style: const TextStyle(fontWeight: FontWeight.bold),),
+                IconButton(onPressed: onEdit, icon: const Icon(Icons.edit), tooltip: 'Edit',),
+                IconButton(onPressed: onDelete, icon: const Icon(Icons.delete), tooltip: 'Delete'),
               ],
             ),
-            Text(note.description ?? ''),
+            if (note.description != null && note.description!.isNotEmpty)
+              Text(note.description!),
           ],
         ),
       ),
