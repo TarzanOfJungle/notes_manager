@@ -67,8 +67,15 @@ class _NotesPageState extends State<NotesPage> {
 }
 
 Widget _buildNotesDisplay(List<Note> notes) {
-  return Column(
-      children: notes.map((note) => NoteTile(onEdit: () => {}, note: note))
-          .toList(),
+  return ListView.separated(
+    shrinkWrap: true,
+    physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (BuildContext context, int index) {
+        return NoteTile(onEdit: () => {}, note: notes[index]); //TODO onEdit
+      },
+      separatorBuilder: (BuildContext context, int index) {
+        return const SizedBox(height: 10.0);
+      },
+      itemCount: notes.length,
   );
 }
