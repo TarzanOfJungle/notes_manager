@@ -41,15 +41,18 @@ class _NotesPageState extends State<NotesPage> {
         ],
       ),
       body: SingleChildScrollView(
-        child: Column(
-          children: [
-            ValueListenableBuilder(
-                valueListenable: _notesBox.listenable(),
-                builder: (context, notesBox, _) {
-                  final notes = _notes;
-                  return _buildNotesDisplay(notes);
-                }),
-          ],
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              ValueListenableBuilder(
+                  valueListenable: _notesBox.listenable(),
+                  builder: (context, notesBox, _) {
+                    final notes = _notes;
+                    return _buildNotesDisplay(notes);
+                  }),
+            ],
+          ),
         ),
       ),
     );
