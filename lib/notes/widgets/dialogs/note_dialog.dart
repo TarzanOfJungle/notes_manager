@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:notes_manager/common/constants/ui_constants.dart';
 import 'package:notes_manager/common/widgets/dialogs/notes_manager_dialog.dart';
 import 'package:uuid/uuid.dart';
 
@@ -6,7 +7,8 @@ import '../../models/note.dart';
 
 class NoteDialog extends StatefulWidget {
   final void Function(Note) onConfirm;
-  final Note? note; // If no note is provided it works as dialog to create new one
+  final Note?
+      note; // If no note is provided it works as dialog to create new one
 
   const NoteDialog({super.key, required this.onConfirm, this.note});
 
@@ -20,7 +22,6 @@ class _NewNoteDialogState extends State<NoteDialog> {
   bool _validTitle = true;
   final _newNoteDescriptionController = TextEditingController();
   bool _newNoteIsImportant = false;
-
 
   @override
   void initState() {
@@ -47,7 +48,10 @@ class _NewNoteDialogState extends State<NoteDialog> {
       children: [
         TextField(
           controller: _newNoteTitleController,
-          decoration: InputDecoration(labelText: "Title:", errorText: _validTitle ? null : "Title Can't Be Empty",),
+          decoration: InputDecoration(
+            labelText: "Title:",
+            errorText: _validTitle ? null : "Title Can't Be Empty",
+          ),
           maxLength: 60,
         ),
         TextField(
@@ -78,6 +82,12 @@ class _NewNoteDialogState extends State<NoteDialog> {
       children: [
         ElevatedButton(
           onPressed: () => Navigator.of(context).pop(),
+          style: ButtonStyle(
+              foregroundColor:
+                  MaterialStateProperty.all(UiConstants.whiteColor),
+              backgroundColor: MaterialStateProperty.all(
+                UiConstants.deleteColor,
+              )),
           child: const Text('Cancel'),
         ),
         const SizedBox(width: 25),
@@ -89,16 +99,22 @@ class _NewNoteDialogState extends State<NoteDialog> {
               if (!_validTitle) return;
 
               widget.onConfirm(Note(
-                  id: _creatingNewNote ? _uuid.v4() : widget.note!.id,
-                  title: _newNoteTitleController.text,
-                  description: _newNoteDescriptionController.text,
-                  isImportant: _newNoteIsImportant,
-                  isResolved: _creatingNewNote ? false : widget.note!.isResolved,
-                  createdAt: _creatingNewNote ? DateTime.now() : widget.note!.createdAt,
-                  updatedAt: _creatingNewNote ? null : DateTime.now(),
+                id: _creatingNewNote ? _uuid.v4() : widget.note!.id,
+                title: _newNoteTitleController.text,
+                description: _newNoteDescriptionController.text,
+                isImportant: _newNoteIsImportant,
+                isResolved: _creatingNewNote ? false : widget.note!.isResolved,
+                createdAt:
+                    _creatingNewNote ? DateTime.now() : widget.note!.createdAt,
+                updatedAt: _creatingNewNote ? null : DateTime.now(),
               ));
               Navigator.of(context).pop();
             },
+            style: ButtonStyle(
+                foregroundColor:
+                    MaterialStateProperty.all(UiConstants.whiteColor),
+                backgroundColor:
+                    MaterialStateProperty.all(UiConstants.confirmColor)),
             child: Text(_creatingNewNote ? 'Add Note' : 'Save Changes')),
       ],
     );
