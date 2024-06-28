@@ -1,15 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:notes_manager/common/constants/hive_constants.dart';
+import 'package:notes_manager/common/widgets/switch_with_label.dart';
 import 'package:notes_manager/notes/widgets/dialogs/note_dialog.dart';
 import 'package:notes_manager/notes/widgets/note_tile.dart';
 
 import '../models/note.dart';
 
-class NotesPage extends StatelessWidget {
-  NotesPage({super.key});
+class NotesPage extends StatefulWidget {
+  const NotesPage({super.key});
+
+  @override
+  State<NotesPage> createState() => _NotesPageState();
+}
+
+class _NotesPageState extends State<NotesPage> {
   final _notesBox = Hive.box<Note>(HiveConstants.NOTES_BOX_KEY);
+  bool _showOnlyImportant = false;
+  bool _showResolved = false;
+
+
+  @override
+  void dispose() {
+    Hive.close();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,9 +32,10 @@ class NotesPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Notes"),
         actions: [
+          _buildFilterSection(),
           IconButton(
               onPressed: () => _onNewButtonPressed(context),
-              icon: const Icon(Icons.add))
+              icon: const Icon(Icons.add, size: 35,))
         ],
       ),
       body: SingleChildScrollView(
@@ -27,14 +43,32 @@ class NotesPage extends StatelessWidget {
           children: [
             ValueListenableBuilder(
                 valueListenable: _notesBox.listenable(),
-                builder: (context, _notesBox, _) {
+                builder: (context, notesBox, _) {
                   final notes = _notes;
                   return _buildNotesDisplay(notes);
-                }
-            ),
+                }),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildFilterSection() {
+    return Row(
+      children: [
+        SwitchWithLabel(
+            value: _showOnlyImportant,
+            onChanged: (_) => setState(() {
+              _showOnlyImportant = !_showOnlyImportant;
+            }),
+            title: "Only important"),
+        SwitchWithLabel(
+            value: _showResolved,
+            onChanged: (_) => setState(() {
+              _showResolved = !_showResolved;
+            }),
+            title: "Resolved"),
+      ],
     );
   }
 
@@ -61,9 +95,8 @@ class NotesPage extends StatelessWidget {
   void _onNewButtonPressed(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) => NoteDialog(
-        onConfirm: (Note newNote) => _addNote(newNote)
-      ),
+      builder: (context) =>
+          NoteDialog(onConfirm: (Note newNote) => _addNote(newNote)),
     );
   }
 
@@ -78,6 +111,9 @@ class NotesPage extends StatelessWidget {
   List<Note> get _notes {
     List<Note> notesList = _notesBox.values.toList();
     notesList.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+
+    notesList = notesList.where((note) => _showOnlyImportant ? note.isImportant : true).where((note) => !_showResolved ? !note.isResolved : true).toList();
+
     return notesList;
   }
 
