@@ -10,12 +10,14 @@ class NoteTile extends StatelessWidget {
   final Note note;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
+  final VoidCallback onResolve;
 
   const NoteTile(
       {super.key,
       required this.onEdit,
       required this.note,
-      required this.onDelete});
+      required this.onDelete,
+      required this.onResolve});
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +46,11 @@ class NoteTile extends StatelessWidget {
                     onPressed: onDelete,
                     icon: const Icon(Icons.delete),
                     tooltip: 'Delete'),
+                if (!note.isResolved)
+                  IconButton(
+                    onPressed: onResolve,
+                    icon: const Icon(Icons.check),
+                    tooltip: 'Resolve'),
               ],
             ),
             if (note.description != null && note.description!.isNotEmpty)
@@ -59,9 +66,10 @@ class NoteTile extends StatelessWidget {
     final df = DateFormat('dd-MM-yyyy hh:mm a');
     return Align(
       alignment: Alignment.centerLeft,
-      child: Text(note.updatedAt == null
-          ? 'Created at: ${df.format(note.createdAt)}'
-          : 'Updated at: ${df.format(note.updatedAt!)}',
+      child: Text(
+        note.updatedAt == null
+            ? 'Created at: ${df.format(note.createdAt)}'
+            : 'Updated at: ${df.format(note.updatedAt!)}',
         style: const TextStyle(fontSize: UiConstants.smallFontSize),
       ),
     );

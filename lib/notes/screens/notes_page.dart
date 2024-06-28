@@ -83,6 +83,7 @@ class _NotesPageState extends State<NotesPage> {
             onDelete: () {
               _deleteNoteById(note.id);
             },
+            onResolve: () => _onResolveButtonPressed(note),
             note: note);
       },
       separatorBuilder: (BuildContext context, int index) {
@@ -106,6 +107,10 @@ class _NotesPageState extends State<NotesPage> {
         builder: (context) => NoteDialog(
             note: note,
             onConfirm: (Note updatedNote) => _editNote(updatedNote)));
+  }
+
+  void _onResolveButtonPressed(Note note) {
+    _editNote(Note(id: note.id, title: note.title, isImportant: note.isImportant, isResolved: true, createdAt: note.createdAt, updatedAt: DateTime.now()));
   }
 
   List<Note> get _notes {
