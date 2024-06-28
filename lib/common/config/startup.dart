@@ -9,9 +9,8 @@ abstract class Startup {
     WidgetsFlutterBinding.ensureInitialized();
     await Hive.initFlutter();
     await _initBoxes();
-    await Hive.openBox<Note>(HiveConstants.NOTES_BOX_KEY);
+    await Hive.openBox<Note>(HiveConstants.notesBoxKey);
   }
-
   static Future<void> _initBoxes() async {
     Hive.registerAdapter(NoteAdapter());
   }

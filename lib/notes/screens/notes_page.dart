@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:notes_manager/common/constants/hive_constants.dart';
+import 'package:notes_manager/common/widgets/switch_with_label.dart';
 import 'package:notes_manager/notes/widgets/dialogs/note_dialog.dart';
 import 'package:notes_manager/notes/widgets/note_tile.dart';
 
@@ -14,7 +15,9 @@ class NotesPage extends StatefulWidget {
 }
 
 class _NotesPageState extends State<NotesPage> {
-  final _notesBox = Hive.box<Note>(HiveConstants.NOTES_BOX_KEY);
+  final _notesBox = Hive.box<Note>(HiveConstants.notesBoxKey);
+  bool _showOnlyImportant = false;
+  bool _showResolved = false;
 
   @override
   void dispose() {
@@ -28,16 +31,46 @@ class _NotesPageState extends State<NotesPage> {
       appBar: AppBar(
         title: const Text("Notes"),
         actions: [
+          _buildFilterSection(),
           IconButton(
               onPressed: () => _onNewButtonPressed(context),
-              icon: const Icon(Icons.add))
+              icon: const Icon(
+                Icons.add,
+                size: 35,
+              ))
         ],
       ),
       body: SingleChildScrollView(
         child: Column(
-          children: [_buildNotesDisplay(_notes)],
+          children: [
+            ValueListenableBuilder(
+                valueListenable: _notesBox.listenable(),
+                builder: (context, notesBox, _) {
+                  final notes = _notes;
+                  return _buildNotesDisplay(notes);
+                }),
+          ],
         ),
       ),
+    );
+  }
+
+  Widget _buildFilterSection() {
+    return Row(
+      children: [
+        SwitchWithLabel(
+            value: _showOnlyImportant,
+            onChanged: (_) => setState(() {
+                  _showOnlyImportant = !_showOnlyImportant;
+                }),
+            title: "Only important"),
+        SwitchWithLabel(
+            value: _showResolved,
+            onChanged: (_) => setState(() {
+                  _showResolved = !_showResolved;
+                }),
+            title: "Resolved"),
+      ],
     );
   }
 
@@ -52,6 +85,7 @@ class _NotesPageState extends State<NotesPage> {
             onDelete: () {
               _deleteNoteById(note.id);
             },
+            onResolve: () => _onResolveButtonPressed(note),
             note: note);
       },
       separatorBuilder: (BuildContext context, int index) {
@@ -64,11 +98,8 @@ class _NotesPageState extends State<NotesPage> {
   void _onNewButtonPressed(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) => NoteDialog(
-        onConfirm: (Note newNote) => setState(() {
-          _addNote(newNote);
-        }),
-      ),
+      builder: (context) =>
+          NoteDialog(onConfirm: (Note newNote) => _addNote(newNote)),
     );
   }
 
@@ -77,12 +108,30 @@ class _NotesPageState extends State<NotesPage> {
         context: context,
         builder: (context) => NoteDialog(
             note: note,
-            onConfirm: (Note updatedNote) => setState(() {
-                  _editNote(updatedNote);
-                })));
+            onConfirm: (Note updatedNote) => _editNote(updatedNote)));
   }
 
-  List<Note> get _notes => _notesBox.values.toList();
+  void _onResolveButtonPressed(Note note) {
+    _editNote(Note(
+        id: note.id,
+        title: note.title,
+        isImportant: note.isImportant,
+        isResolved: true,
+        createdAt: note.createdAt,
+        updatedAt: DateTime.now()));
+  }
+
+  List<Note> get _notes {
+    List<Note> notesList = _notesBox.values.toList();
+    notesList.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+
+    notesList = notesList
+        .where((note) => _showOnlyImportant ? note.isImportant : true)
+        .where((note) => !_showResolved ? !note.isResolved : true)
+        .toList();
+
+    return notesList;
+  }
 
   void _addNote(Note newNote) {
     _notesBox.put(newNote.id, newNote);
@@ -92,9 +141,5 @@ class _NotesPageState extends State<NotesPage> {
     _notesBox.put(updatedNote.id, updatedNote);
   }
 
-  void _deleteNoteById(String id) {
-    setState(() {
-      _notesBox.delete(id);
-    });
-  }
+  void _deleteNoteById(String id) => _notesBox.delete(id);
 }

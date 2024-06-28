@@ -14,11 +14,18 @@ class Note {
   final bool isImportant;
   @HiveField(4)
   final bool isResolved;
+  @HiveField(5)
+  final DateTime createdAt;
+  @HiveField(6)
+  final DateTime? updatedAt;
 
-  Note(
-      {required this.id,
-      required this.title,
-      this.description,
-      required this.isImportant,
-      required this.isResolved});
+  Note({
+    required this.id,
+    required this.title,
+    this.description,
+    required this.isImportant,
+    required this.isResolved,
+    required this.createdAt,
+    this.updatedAt,
+  });
 }
