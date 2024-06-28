@@ -23,11 +23,11 @@ class NoteTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15.0),
+        borderRadius: BorderRadius.circular(UiConstants.standardBorderRadius),
         color: note.isImportant ? _IMPORTANT_NOTE_COLOR : _DEFAULT_NOTE_COLOR,
       ),
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(UiConstants.standardPadding),
         child: Column(
           children: [
             Row(

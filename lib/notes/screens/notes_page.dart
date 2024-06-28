@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:notes_manager/common/constants/hive_constants.dart';
+import 'package:notes_manager/common/constants/ui_constants.dart';
 import 'package:notes_manager/common/widgets/switch_with_label.dart';
 import 'package:notes_manager/notes/widgets/dialogs/note_dialog.dart';
 import 'package:notes_manager/notes/widgets/note_tile.dart';
@@ -41,7 +42,7 @@ class _NotesPageState extends State<NotesPage> {
         ],
       ),
       body: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.symmetric(horizontal: UiConstants.standardPadding),
           child: ValueListenableBuilder(
                   valueListenable: _notesBox.listenable(),
                   builder: (context, notesBox, _) {
