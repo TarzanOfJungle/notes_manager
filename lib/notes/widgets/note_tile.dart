@@ -12,53 +12,92 @@ class NoteTile extends StatelessWidget {
   final VoidCallback onDelete;
   final VoidCallback onResolve;
 
-  const NoteTile(
-      {super.key,
-      required this.onEdit,
-      required this.note,
-      required this.onDelete,
-      required this.onResolve});
+  const NoteTile({super.key,
+    required this.onEdit,
+    required this.note,
+    required this.onDelete,
+    required this.onResolve});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(UiConstants.standardBorderRadius),
-        color: note.isImportant ? _IMPORTANT_NOTE_COLOR : _DEFAULT_NOTE_COLOR,
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(UiConstants.standardPadding),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  note.title,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-                IconButton(
-                  onPressed: onEdit,
-                  icon: const Icon(Icons.edit),
-                  tooltip: 'Edit',
-                ),
-                IconButton(
-                    onPressed: onDelete,
-                    icon: const Icon(Icons.delete),
-                    tooltip: 'Delete'),
-                if (!note.isResolved)
-                  IconButton(
-                    onPressed: onResolve,
-                    icon: const Icon(Icons.check),
-                    tooltip: 'Resolve'),
-              ],
+    return Stack(
+        alignment: Alignment.center,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(
+                  UiConstants.standardBorderRadius),
+              color: note.isImportant
+                  ? _IMPORTANT_NOTE_COLOR
+                  : _DEFAULT_NOTE_COLOR,
             ),
-            if (note.description != null && note.description!.isNotEmpty)
-              Text(note.description!),
-            _buildTimestampDisplay(),
-          ],
-        ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: UiConstants.standardPadding),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    children: [
+                      _buildTitleDisplayWithActions(),
+                      if (note.description != null &&
+                          note.description!.isNotEmpty)
+                        Text(note.description!),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      _buildTimestampDisplay(),
+                      IconButton(
+                          onPressed: onDelete,
+                          icon: const Icon(Icons.delete),
+                          tooltip: 'Delete'),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ]
+    );
+  }
+
+  Widget _buildTitleDisplayWithActions() {
+    return SizedBox(
+      height: 40.0,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            child: Text(
+              note.title,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+          _buildActionsOrResolvedIndicator(),
+        ],
       ),
+    );
+  }
+
+  Widget _buildActionsOrResolvedIndicator() {
+    if (note.isResolved) {
+      return const Text('RESOLVED', style: TextStyle(fontWeight: FontWeight.bold),);
+    }
+
+    return Row(
+      children: [
+        IconButton(
+          onPressed: onEdit,
+          icon: const Icon(Icons.edit),
+          tooltip: 'Edit',
+        ),
+        IconButton(
+            onPressed: onResolve,
+            icon: const Icon(Icons.check),
+            tooltip: 'Resolve'),
+      ],
     );
   }
 
