@@ -58,7 +58,8 @@ class _NewNoteDialogState extends State<NoteDialog> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text('Important?'),
+            const Text('Important'),
+            const SizedBox(width: 10.0),
             Switch(
                 value: _newNoteIsImportant,
                 onChanged: (_) => setState(() {

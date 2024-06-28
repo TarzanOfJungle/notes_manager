@@ -40,6 +40,7 @@ class NoteTile extends StatelessWidget {
                   Column(
                     children: [
                       _buildTitleDisplayWithActions(),
+                      const SizedBox(height: UiConstants.standardPadding,),
                       if (note.description != null &&
                           note.description!.isNotEmpty)
                         Text(note.description!),
