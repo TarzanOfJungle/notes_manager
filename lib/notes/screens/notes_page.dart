@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:notes_manager/common/constants/hive_constants.dart';
+import 'package:notes_manager/common/constants/ui_constants.dart';
 import 'package:notes_manager/common/widgets/switch_with_label.dart';
 import 'package:notes_manager/notes/widgets/dialogs/note_dialog.dart';
 import 'package:notes_manager/notes/widgets/note_tile.dart';
 
 import '../models/note.dart';
+
+const _EMPTY_NOTES_LIST_MESSAGE = "Create some notes by clicking the + button.";
+const _NO_IMPORTANT_NOTES_MESSAGE = "There are no notes marked as important";
 
 class NotesPage extends StatefulWidget {
   const NotesPage({super.key});
@@ -40,18 +44,15 @@ class _NotesPageState extends State<NotesPage> {
               ))
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            ValueListenableBuilder(
-                valueListenable: _notesBox.listenable(),
-                builder: (context, notesBox, _) {
-                  final notes = _notes;
-                  return _buildNotesDisplay(notes);
-                }),
-          ],
-        ),
-      ),
+      body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: UiConstants.standardPadding),
+          child: ValueListenableBuilder(
+                  valueListenable: _notesBox.listenable(),
+                  builder: (context, notesBox, _) {
+                    final notes = _notes;
+                    return _buildNotesDisplay(notes);
+                  }),
+          ),
     );
   }
 
@@ -75,9 +76,11 @@ class _NotesPageState extends State<NotesPage> {
   }
 
   Widget _buildNotesDisplay(List<Note> notes) {
+    if (notes.isEmpty) {
+      return Center(child: Text(_showOnlyImportant ?_NO_IMPORTANT_NOTES_MESSAGE : _EMPTY_NOTES_LIST_MESSAGE));
+    }
     return ListView.separated(
       shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (BuildContext context, int index) {
         final note = notes[index];
         return NoteTile(
@@ -115,6 +118,7 @@ class _NotesPageState extends State<NotesPage> {
     _editNote(Note(
         id: note.id,
         title: note.title,
+        description: note.description,
         isImportant: note.isImportant,
         isResolved: true,
         createdAt: note.createdAt,
