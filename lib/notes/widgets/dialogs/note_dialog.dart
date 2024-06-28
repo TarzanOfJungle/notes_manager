@@ -17,6 +17,7 @@ class NoteDialog extends StatefulWidget {
 class _NewNoteDialogState extends State<NoteDialog> {
   final _uuid = const Uuid();
   final _newNoteTitleController = TextEditingController();
+  bool _validTitle = true;
   final _newNoteDescriptionController = TextEditingController();
   bool _newNoteIsImportant = false;
 
@@ -46,11 +47,13 @@ class _NewNoteDialogState extends State<NoteDialog> {
       children: [
         TextField(
           controller: _newNoteTitleController,
-          decoration: const InputDecoration(labelText: "Title:"),
+          decoration: InputDecoration(labelText: "Title:", errorText: _validTitle ? null : "Title Can't Be Empty",),
+          maxLength: 60,
         ),
         TextField(
           controller: _newNoteDescriptionController,
           decoration: const InputDecoration(labelText: "Description:"),
+          maxLength: 500,
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -79,6 +82,11 @@ class _NewNoteDialogState extends State<NoteDialog> {
         const SizedBox(width: 25),
         ElevatedButton(
             onPressed: () {
+              setState(() {
+                _validTitle = _newNoteTitleController.text.isNotEmpty;
+              });
+              if (!_validTitle) return;
+
               widget.onConfirm(Note(
                   id: _creatingNewNote ? _uuid.v4() : widget.note!.id,
                   title: _newNoteTitleController.text,
