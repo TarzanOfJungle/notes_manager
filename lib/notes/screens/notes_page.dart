@@ -115,6 +115,7 @@ class _NotesPageState extends State<NotesPage> {
     _editNote(Note(
         id: note.id,
         title: note.title,
+        description: note.description,
         isImportant: note.isImportant,
         isResolved: true,
         createdAt: note.createdAt,

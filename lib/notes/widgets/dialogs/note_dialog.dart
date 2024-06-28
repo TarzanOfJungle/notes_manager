@@ -84,7 +84,7 @@ class _NewNoteDialogState extends State<NoteDialog> {
                   title: _newNoteTitleController.text,
                   description: _newNoteDescriptionController.text,
                   isImportant: _newNoteIsImportant,
-                  isResolved: false, //TODO use this
+                  isResolved: _creatingNewNote ? false : widget.note!.isResolved,
                   createdAt: _creatingNewNote ? DateTime.now() : widget.note!.createdAt,
                   updatedAt: _creatingNewNote ? null : DateTime.now(),
               ));
