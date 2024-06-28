@@ -40,21 +40,15 @@ class _NotesPageState extends State<NotesPage> {
               ))
         ],
       ),
-      body: SingleChildScrollView(
-        child: Padding(
+      body: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              ValueListenableBuilder(
+          child: ValueListenableBuilder(
                   valueListenable: _notesBox.listenable(),
                   builder: (context, notesBox, _) {
                     final notes = _notes;
                     return _buildNotesDisplay(notes);
                   }),
-            ],
           ),
-        ),
-      ),
     );
   }
 
@@ -80,7 +74,6 @@ class _NotesPageState extends State<NotesPage> {
   Widget _buildNotesDisplay(List<Note> notes) {
     return ListView.separated(
       shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (BuildContext context, int index) {
         final note = notes[index];
         return NoteTile(
