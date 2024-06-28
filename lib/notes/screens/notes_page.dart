@@ -15,10 +15,9 @@ class NotesPage extends StatefulWidget {
 }
 
 class _NotesPageState extends State<NotesPage> {
-  final _notesBox = Hive.box<Note>(HiveConstants.NOTES_BOX_KEY);
+  final _notesBox = Hive.box<Note>(HiveConstants.notesBoxKey);
   bool _showOnlyImportant = false;
   bool _showResolved = false;
-
 
   @override
   void dispose() {
@@ -35,7 +34,10 @@ class _NotesPageState extends State<NotesPage> {
           _buildFilterSection(),
           IconButton(
               onPressed: () => _onNewButtonPressed(context),
-              icon: const Icon(Icons.add, size: 35,))
+              icon: const Icon(
+                Icons.add,
+                size: 35,
+              ))
         ],
       ),
       body: SingleChildScrollView(
@@ -59,14 +61,14 @@ class _NotesPageState extends State<NotesPage> {
         SwitchWithLabel(
             value: _showOnlyImportant,
             onChanged: (_) => setState(() {
-              _showOnlyImportant = !_showOnlyImportant;
-            }),
+                  _showOnlyImportant = !_showOnlyImportant;
+                }),
             title: "Only important"),
         SwitchWithLabel(
             value: _showResolved,
             onChanged: (_) => setState(() {
-              _showResolved = !_showResolved;
-            }),
+                  _showResolved = !_showResolved;
+                }),
             title: "Resolved"),
       ],
     );
@@ -110,14 +112,23 @@ class _NotesPageState extends State<NotesPage> {
   }
 
   void _onResolveButtonPressed(Note note) {
-    _editNote(Note(id: note.id, title: note.title, isImportant: note.isImportant, isResolved: true, createdAt: note.createdAt, updatedAt: DateTime.now()));
+    _editNote(Note(
+        id: note.id,
+        title: note.title,
+        isImportant: note.isImportant,
+        isResolved: true,
+        createdAt: note.createdAt,
+        updatedAt: DateTime.now()));
   }
 
   List<Note> get _notes {
     List<Note> notesList = _notesBox.values.toList();
     notesList.sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
-    notesList = notesList.where((note) => _showOnlyImportant ? note.isImportant : true).where((note) => !_showResolved ? !note.isResolved : true).toList();
+    notesList = notesList
+        .where((note) => _showOnlyImportant ? note.isImportant : true)
+        .where((note) => !_showResolved ? !note.isResolved : true)
+        .toList();
 
     return notesList;
   }
